@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 import time
 import mysql.connector
+import os
 
 def data_for_mysql_order(data_dict):
     data_arr = []
@@ -26,6 +27,8 @@ chrome_options.add_argument("--no-sandbox")
 driver = webdriver.Chrome(os.environ.get("CHROMEDRIVER_PATH"), options=chrome_options)
 driver.get('https://www.isolarcloud.eu/?lang=en_US')
 
+print("Connect to page")
+
 login_field = driver.find_element("id", "userAcct")
 login_field.send_keys("voloshchukmm1973@gmail.com")
 
@@ -37,6 +40,9 @@ button_log.click()
 time.sleep(3)
 agree_field = driver.find_elements(By.CLASS_NAME, "privacy-agree")
 agree_field[0].click()
+
+print("Go to next page")
+
 time.sleep(6)
 rep_field = driver.find_elements(By.CLASS_NAME, "reportAll")
 rep_field[0].click()
@@ -66,6 +72,8 @@ daily_data = driver.find_elements(By.CLASS_NAME, "el-table_2_column_8")
 total_data = driver.find_elements(By.CLASS_NAME, "el-table_2_column_9")
 daily_hour_data = driver.find_elements(By.CLASS_NAME, "el-table_2_column_14")
 
+print("Start loop")
+
 for i in range(0,len(name_data)):
     data_one["name"] = name_data[i].text
     data_one["time"] = time_data[i].text
@@ -75,6 +83,7 @@ for i in range(0,len(name_data)):
     data.append(data_one)
     data_one = {}
 data.pop(0)
+print("Start write to mysql")
 print(len(data))
 prepare_data_orders = data_for_mysql_order(data)
 sql = "INSERT INTO solar (name, date_time, daily_yield, total_yield,  daily_hour) VALUES (%s, %s, %s, %s, %s)"
