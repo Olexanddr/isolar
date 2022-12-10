@@ -1,1 +1,3 @@
 selenium
+undetected_chromedriver
+mysql
