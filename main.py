@@ -1,4 +1,3 @@
-import undetected_chromedriver.v2 as uc
 from selenium.webdriver.common.by import By
 import time
 import mysql.connector
