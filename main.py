@@ -6,7 +6,7 @@ import os
 import datetime
 
 print(datetime.datetime.now())
-
+'''
 def data_for_mysql_order(data_dict):
     data_arr = []
     for data in data_dict:
@@ -92,3 +92,4 @@ prepare_data_orders = data_for_mysql_order(data)
 sql = "INSERT INTO solar (name, date_time, daily_yield, total_yield,  daily_hour) VALUES (%s, %s, %s, %s, %s)"
 mycursor.executemany(sql, prepare_data_orders)
 mydb.commit()
+'''
