@@ -92,7 +92,7 @@ prepare_data_orders = data_for_mysql_order(data)
 with conn2.cursor() as cursor:
     conn2.autocommit = True
     insert = sql.SQL('INSERT INTO i_solar_cloud.solar (name, date_time, daily_yield, total_yield, daily_hour) VALUES {}').format(
-        sql.SQL(',').join(map(sql.Literal, rec))
+        sql.SQL(',').join(map(sql.Literal, data))
     )
     cursor.execute(insert)
 
