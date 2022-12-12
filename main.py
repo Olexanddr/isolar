@@ -3,10 +3,13 @@ from selenium import webdriver
 import time
 import mysql.connector
 import os
-import datetime
+from datetime import datetime, timedelta
+import psycopg2
+from psycopg2 import sql
 
-print(datetime.datetime.now())
-'''
+yesterday = (datetime.now() - timedelta(days = 1)).date()
+
+
 def data_for_mysql_order(data_dict):
     data_arr = []
     for data in data_dict:
@@ -15,13 +18,10 @@ def data_for_mysql_order(data_dict):
     return data_arr
 
 
-mydb = mysql.connector.connect(
-  host="ba462570.mysql.tools",
-  user="ba462570_data212",
-  password="8z88y(UFb+",
-   database="ba462570_data212"
-)
-mycursor = mydb.cursor()
+conn2 = psycopg2.connect(dbname='postgres', user='postgres', 
+                      password='CTGgIrBEDS6XrRcZHy6Kz2JdK04ucfI1tUky0hHpXJlUJDwQGZIAYYpc4iGvnrat', host='p.nouipfwlxzg6xbn6tspewiya6u.db.postgresbridge.com')
+cursor2 = conn2.cursor()
+
 chrome_options = webdriver.ChromeOptions()
 chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
 chrome_options.add_argument("--headless")
@@ -57,7 +57,7 @@ date_field = driver.find_elements(By.CLASS_NAME, "el-input--suffix")
 input_date = date_field[1].find_elements(By.CLASS_NAME, "el-input__inner")
 input_date[0].click()
 input_date[0].clear()
-input_date[0].send_keys("2022-11-30")
+input_date[0].send_keys(str(yesterday))
 time.sleep(3)
 time_field = driver.find_elements(By.CLASS_NAME, "el-input--suffix")
 time_field[4].click()
@@ -89,7 +89,10 @@ data.pop(0)
 print("Start write to mysql")
 print(len(data))
 prepare_data_orders = data_for_mysql_order(data)
-sql = "INSERT INTO solar (name, date_time, daily_yield, total_yield,  daily_hour) VALUES (%s, %s, %s, %s, %s)"
-mycursor.executemany(sql, prepare_data_orders)
-mydb.commit()
-'''
+with conn2.cursor() as cursor:
+    conn2.autocommit = True
+    insert = sql.SQL('INSERT INTO i_solar_cloud.solar (name, date_time, daily_yield, total_yield, daily_hour) VALUES {}').format(
+        sql.SQL(',').join(map(sql.Literal, rec))
+    )
+    cursor.execute(insert)
+
