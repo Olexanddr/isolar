@@ -3,6 +3,9 @@ from selenium import webdriver
 import time
 import mysql.connector
 import os
+import datetime
+
+print(datetime.datetime.now())
 
 def data_for_mysql_order(data_dict):
     data_arr = []
